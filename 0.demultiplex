@@ -3,19 +3,25 @@
 # activate biopython environment
 source activate biopython
 
-raw_files="raw_data/SAM1-12a_S3_L001_R1_001.fastq.gz raw_data/SAM1-12b_S4_L001_R1_001.fastq.gz"
+# this needs to be the path to the idemp binary, see: https://github.com/yhwu/idemp
+$IDEMP=../idemp/idemp
+
+R1_files="raw_data/SAM1-12a_S3_L001_R1_001.fastq.gz raw_data/SAM1-12b_S4_L001_R1_001.fastq.gz"
+R2_files="raw_data/SAM1-12a_S3_L001_R2_001.fastq.gz raw_data/SAM1-12b_S4_L001_R2_001.fastq.gz"
+barcode_files="raw_data/SAM1-12a_S3.barcode.txt raw_data/SAM1-12b_S4.barcode.txt"
 barcode_length=8
 
 for raw_file in $raw_files
 do
 	# extract barcode fastq from reads
-	base_file=`echo $raw_file | sed "s/.fastq.gz//"`
+	base_file=`echo $R1_file | sed "s/.fastq.gz//"`
 	out_file=$base_file.no_barcodes.fastq.gz
 	barcode_file=$base_file.barcodes.fastq.gz
 	echo "running barcode extractor: $raw_file $out_file $barcode_file $barcode_length"
-	#python barcode_extractor.py $raw_file $out_file $barcode_file $barcode_length
+	python barcode_extractor.py $raw_file $out_file $barcode_file $barcode_length
+
+	echo "running idemp"
+	$IDEMP -b barcode.txt -I $barcode_file -R1 $out_file -R2 $outR2_file -m 1 -i data
 done
 exit
 
-# put the path idemp
-idemp -b barcode.txt -I raw_data/I1.fastq -R1 raw_data/R1.fastq -R2 raw_data/R2.fastq -m 1 -i data
