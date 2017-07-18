@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# put the path idemp
+idemp -b barcode.txt -I raw_data/I1.fastq -R1 raw_data/R1.fastq -R2 raw_data/R2.fastq -m 1 -i data
