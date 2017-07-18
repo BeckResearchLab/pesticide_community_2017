@@ -1,14 +1,24 @@
 #!/usr/bin/python
 
-from Bio.SeqIO.QualityIO import FastqGeneralIterator
+import argparse
 import gzip
 
-input_fastq = "SAM1-12a_S3_L001_R1_001.fastq.gz"
-output_fastq = "SAM1-12a_S3_L001_R1_001.no_barcodes.fastq.gz"
-index_fastq = "SAM1-12a_S3_L001_R1_001.barcodes.fastq.gz"
-barcode_length = 8
+from Bio.SeqIO.QualityIO import FastqGeneralIterator
 
-with gzip.open(input_fastq, "rt") as handle, gzip.open(output_fastq, "wt") as data_out, gzip.open(index_fastq, "wt") as index_out:
+
+parser = argparse.ArgumentParser(description='Extract and trim barcodes from a FASTQ file', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument('input_fastq', help='input read fastq file')
+parser.add_argument('output_fastq', help='output trimmed read fastq file')
+parser.add_argument('barcode_fastq', help='output barcode fastq file')
+parser.add_argument('barcode_length', help='barcode length as integer', type=int)
+args = parser.parse_args()
+
+#input_fastq = "SAM1-12a_S3_L001_R1_001.fastq.gz"
+#output_fastq = "SAM1-12a_S3_L001_R1_001.no_barcodes.fastq.gz"
+#index_fastq = "SAM1-12a_S3_L001_R1_001.barcodes.fastq.gz"
+#barcode_length = args.barcode_length
+
+with gzip.open(args.input_fastq, "rt") as handle, gzip.open(args.output_fastq, "wt") as data_out, gzip.open(args.barcode_fastq, "wt") as barcode_out:
     for (title, sequence, quality) in FastqGeneralIterator(handle):
-        data_out.write("{}\n{}\n+\n{}\n\n".format(title, sequence[8:], quality[8:]))
-        index_out.write("{}\n{}\n+\n{}\n\n".format(title, sequence[:8], quality[:8]))
+        data_out.write("{}\n{}\n+\n{}\n\n".format(title, sequence[args.barcode_length:], quality[args.barcode_length:]))
+        barcode_out.write("{}\n{}\n+\n{}\n\n".format(title, sequence[:args.barcode_length], quality[:args.barcode_length]))
