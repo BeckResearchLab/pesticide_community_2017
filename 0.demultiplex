@@ -6,22 +6,22 @@ source activate biopython
 # this needs to be the path to the idemp binary, see: https://github.com/yhwu/idemp
 $IDEMP=../idemp/idemp
 
-R1_files="raw_data/SAM1-12a_S3_L001_R1_001.fastq.gz raw_data/SAM1-12b_S4_L001_R1_001.fastq.gz"
-R2_files="raw_data/SAM1-12a_S3_L001_R2_001.fastq.gz raw_data/SAM1-12b_S4_L001_R2_001.fastq.gz"
-barcode_files="raw_data/SAM1-12a_S3.barcode.txt raw_data/SAM1-12b_S4.barcode.txt"
-barcode_length=8
+function demultiplex {
+	R1_fastq=$1
+	R2_fastq=$2
+	barcode_length=$3
+	barcode_file=$4
 
-for raw_file in $raw_files
-do
 	# extract barcode fastq from reads
-	base_file=`echo $R1_file | sed "s/.fastq.gz//"`
-	out_file=$base_file.no_barcodes.fastq.gz
-	barcode_file=$base_file.barcodes.fastq.gz
-	echo "running barcode extractor: $raw_file $out_file $barcode_file $barcode_length"
-	python barcode_extractor.py $raw_file $out_file $barcode_file $barcode_length
+	base_fastq=`echo $R1_fastq | sed "s/.fastq.gz//"`
+	out_fastq=$base_fastq.no_barcodes.fastq.gz
+	barcode_fastq=$base_fastq.barcodes.fastq.gz
+	echo "running barcode extractor: $R1_fastq $out_fastq $barcode_fastq $barcode_length"
+	python barcode_extractor.py $R1_fastq $out_fastq $barcode_fastq $barcode_length"
 
 	echo "running idemp"
-	$IDEMP -b barcode.txt -I $barcode_file -R1 $out_file -R2 $outR2_file -m 1 -i data
+	$IDEMP -b $barcode_file -I $barcode_fastq -R1 $out_fastq -R2 $R2_file -m 1 -i data
 done
-exit
 
+demultiplex raw_data/SAM1-12a_S3_L001_R1_001.fastq.gz raw_data/SAM1-12a_S3_L001_R2_001.fastq.gz 8 raw_data/SAM1-12a_S3.barcode.txt
+demultiplex raw_data/SAM1-12b_S4_L001_R1_001.fastq.gz raw_data/SAM1-12b_S4_L001_R2_001.fastq.gz 8 raw_data/SAM1-12b_S4.barcode.txt
