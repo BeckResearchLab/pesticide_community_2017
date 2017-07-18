@@ -28,8 +28,9 @@ function demultiplex {
 		python barcode_extractor.py $R1_fastq $out_fastq $barcode_fastq $barcode_length
 	fi
 
-	echo "running idemp"
-	$IDEMP -b $barcode_file -I $barcode_fastq -R1 $out_fastq -R2 $R2_fastq -m 1 -i data
+	echo "running idemp with the following options:"
+	echo $IDEMP -b $barcode_file -I1 $barcode_fastq -R1 $out_fastq -R2 $R2_fastq -m 1 -o data
+	$IDEMP -b $barcode_file -I1 $barcode_fastq -R1 $out_fastq -R2 $R2_fastq -m 1 -o data
 }
 
 demultiplex raw_data/SAM1-12a_S3_L001_R1_001.fastq.gz raw_data/SAM1-12a_S3_L001_R2_001.fastq.gz 8 raw_data/SAM1-12a_S3.barcodes.txt
