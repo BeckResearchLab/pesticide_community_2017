@@ -4,7 +4,7 @@
 source activate biopython
 
 # this needs to be the path to the idemp binary, see: https://github.com/yhwu/idemp
-$IDEMP=../idemp/idemp
+IDEMP=../idemp/idemp
 
 function demultiplex {
 	R1_fastq=$1
@@ -17,11 +17,11 @@ function demultiplex {
 	out_fastq=$base_fastq.no_barcodes.fastq.gz
 	barcode_fastq=$base_fastq.barcodes.fastq.gz
 	echo "running barcode extractor: $R1_fastq $out_fastq $barcode_fastq $barcode_length"
-	python barcode_extractor.py $R1_fastq $out_fastq $barcode_fastq $barcode_length"
+	python barcode_extractor.py $R1_fastq $out_fastq $barcode_fastq $barcode_length
 
 	echo "running idemp"
 	$IDEMP -b $barcode_file -I $barcode_fastq -R1 $out_fastq -R2 $R2_file -m 1 -i data
-done
+}
 
 demultiplex raw_data/SAM1-12a_S3_L001_R1_001.fastq.gz raw_data/SAM1-12a_S3_L001_R2_001.fastq.gz 8 raw_data/SAM1-12a_S3.barcode.txt
 demultiplex raw_data/SAM1-12b_S4_L001_R1_001.fastq.gz raw_data/SAM1-12b_S4_L001_R2_001.fastq.gz 8 raw_data/SAM1-12b_S4.barcode.txt
