@@ -1,4 +1,21 @@
 #!/bin/bash
 
+# activate biopython environment
+source activate biopython
+
+raw_files="raw_data/SAM1-12a_S3_L001_R1_001.fastq.gz raw_data/SAM1-12b_S4_L001_R1_001.fastq.gz"
+barcode_length=8
+
+for raw_file in $raw_files
+do
+	# extract barcode fastq from reads
+	base_file=`echo $raw_file | sed "s/.fastq.gz//"`
+	out_file=$base_file.no_barcodes.fastq.gz
+	barcode_file=$base_file.barcodes.fastq.gz
+	echo "running barcode extractor: $raw_file $out_file $barcode_file $barcode_length"
+	#python barcode_extractor.py $raw_file $out_file $barcode_file $barcode_length
+done
+exit
+
 # put the path idemp
 idemp -b barcode.txt -I raw_data/I1.fastq -R1 raw_data/R1.fastq -R2 raw_data/R2.fastq -m 1 -i data
