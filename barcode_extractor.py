@@ -27,8 +27,8 @@ print("expected barcode length is: %d" % args.barcode_length)
 
 with gzip.open(args.input_fastq, "rt") as handle, gzip.open(args.output_fastq, "wt") as data_out, gzip.open(args.barcode_fastq, "wt") as barcode_out:
     for (title, sequence, quality) in FastqGeneralIterator(handle):
-        data_out.write("{}\n{}\n+\n{}\n\n".format(title, sequence[args.barcode_length:], quality[args.barcode_length:]))
-        barcode_out.write("{}\n{}\n+\n{}\n\n".format(title, sequence[:args.barcode_length], quality[:args.barcode_length]))
+        data_out.write("{}\n{}\n+\n{}\n".format(title, sequence[args.barcode_length:], quality[args.barcode_length:]))
+        barcode_out.write("{}\n{}\n+\n{}\n".format(title, sequence[:args.barcode_length], quality[:args.barcode_length]))
         reads_processed += 1
         if reads_processed % 10000 == 0:
             print("processed %d reads" % reads_processed)
