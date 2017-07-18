@@ -29,7 +29,7 @@ function demultiplex {
 	fi
 
 	echo "running idemp"
-	$IDEMP -b $barcode_file -I $barcode_fastq -R1 $out_fastq -R2 $R2_file -m 1 -i data
+	$IDEMP -b $barcode_file -I $barcode_fastq -R1 $out_fastq -R2 $R2_fastq -m 1 -i data
 }
 
 demultiplex raw_data/SAM1-12a_S3_L001_R1_001.fastq.gz raw_data/SAM1-12a_S3_L001_R2_001.fastq.gz 8 raw_data/SAM1-12a_S3.barcodes.txt
