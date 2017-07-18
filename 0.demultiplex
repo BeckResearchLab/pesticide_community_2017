@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# should existing files for the barcode extractor be overwritten
+skip_if_exists=true
+
 # activate biopython environment
 source activate biopython
 
@@ -16,12 +19,18 @@ function demultiplex {
 	base_fastq=`echo $R1_fastq | sed "s/.fastq.gz//"`
 	out_fastq=$base_fastq.no_barcodes.fastq.gz
 	barcode_fastq=$base_fastq.barcodes.fastq.gz
-	echo "running barcode extractor: $R1_fastq $out_fastq $barcode_fastq $barcode_length"
-	python barcode_extractor.py $R1_fastq $out_fastq $barcode_fastq $barcode_length
+	if [ -e "$out_fastq" ] && [ -e "$barcode_fastq" ] && [ "$skip_if_exists" = true ]
+	then
+		echo "skipping running barcode extractor because all of the following files exist:"
+		echo "$out_fastq $barcode_fastq"
+	else
+		echo "running barcode extractor: $R1_fastq $out_fastq $barcode_fastq $barcode_length"
+		python barcode_extractor.py $R1_fastq $out_fastq $barcode_fastq $barcode_length
+	fi
 
 	echo "running idemp"
 	$IDEMP -b $barcode_file -I $barcode_fastq -R1 $out_fastq -R2 $R2_file -m 1 -i data
 }
 
-demultiplex raw_data/SAM1-12a_S3_L001_R1_001.fastq.gz raw_data/SAM1-12a_S3_L001_R2_001.fastq.gz 8 raw_data/SAM1-12a_S3.barcode.txt
-demultiplex raw_data/SAM1-12b_S4_L001_R1_001.fastq.gz raw_data/SAM1-12b_S4_L001_R2_001.fastq.gz 8 raw_data/SAM1-12b_S4.barcode.txt
+demultiplex raw_data/SAM1-12a_S3_L001_R1_001.fastq.gz raw_data/SAM1-12a_S3_L001_R2_001.fastq.gz 8 raw_data/SAM1-12a_S3.barcodes.txt
+demultiplex raw_data/SAM1-12b_S4_L001_R1_001.fastq.gz raw_data/SAM1-12b_S4_L001_R2_001.fastq.gz 8 raw_data/SAM1-12b_S4.barcodes.txt
