@@ -1,0 +1,8 @@
+#!/bin/bash
+
+file=$1
+tmp_file=`echo $file | sed "s/.gz//g"`
+
+gzcat $file | sed '/^\s*$/d' > $tmp_file
+rm $file
+gzip -v9 $tmp_file

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+file=$1
+tmp_file=`echo $file | sed "s/.gz//g"`
+
+gzcat $file | awk '{ if (line % 4 == 0) printf("@%s\n", $0); else print $0; ++line; }' > $tmp_file
+rm $file
+gzip -v9 $tmp_file
