@@ -31,6 +31,6 @@ with gzip.open(args.input_fastq, "rt") as handle, gzip.open(args.output_fastq, "
         barcode_out.write("{}\n{}\n+\n{}\n\n".format(title, sequence[:args.barcode_length], quality[:args.barcode_length]))
         reads_processed += 1
         if reads_processed % 10000 == 0:
-            print("processed 10000 reads")
+            print("processed %d reads" % reads_processed)
 
 print("processed %d reads" % reads_processed)
