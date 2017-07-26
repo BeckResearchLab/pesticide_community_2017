@@ -8,3 +8,11 @@ To install DADA2, these instructions were followed to install it:
 To demultiplex, you will need a biopython install.  Do this with conda:
 * `conda create --name biopython biopython`
 * `source activate biopython # switch to the virtual environment`
+
+Directory structure:
+```
+├── LICENSE
+├── README.md
+├── data
+├── raw_data
+```
